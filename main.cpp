@@ -7,9 +7,6 @@
 using std::cout;
 using std::cin;
 using std::endl;
-#include <ctime>
-using std::time_t;
-using std::time;
 #include <fstream>
 using std::ifstream;
 using std::ofstream;
@@ -20,6 +17,8 @@ using std::getline;
 using std::istringstream;
 #include <vector>
 using std::vector;
+# include <chrono>
+using std::chrono::system_clock;
 
 int main()
 {
@@ -92,22 +91,23 @@ int main()
 
 		// Converts file strings to ints for manipulation
 		// long long int required to not lose data while converting time_t to int
-		long long int oldt;
+		long long int last_update;
 		istringstream iss(times[0]);
-		iss >> oldt;
+		iss >> last_update;
 
-		long long int elapsed;
+		long long int total_ticks;
 		istringstream iss2(times[1]);
-		iss2 >> elapsed;
+		iss2 >> total_ticks;
 
 		// Calculates elapsed time
-		time_t now = time(NULL);
-		long long int diff = now - oldt;
-		elapsed = elapsed + diff;
+		system_clock::time_point tp_now = system_clock::now();
+		time_t now = system_clock::to_time_t(tp_now);
+		long long int elapsed = now - last_update;
+		total_ticks = total_ticks + elapsed;
 
 		cout << endl;
-		cout << "The difference in times is " << diff << " seconds." << endl;
-		cout << "The total elapsed time is " << elapsed << " seconds." << endl;
+		cout << "The difference in times is " << elapsed << " seconds." << endl;
+		cout << "The total elapsed time is " << total_ticks << " seconds." << endl;
 
 		// User-prompt for output file
 		cout << "Where are we storing the new time?" << endl;
@@ -128,7 +128,7 @@ int main()
 
 		// Writes to file
 		outfile << now << endl;
-		outfile << elapsed << endl;
+		outfile << total_ticks << endl;
 		
 		cout << endl;
 		cout << "Write successful." << endl;

@@ -1,7 +1,7 @@
 // elapsed_time.h
 // Corey Gray and Mike Bilan
 // 27 Nov 2016
-// Header for elapsedtime.cpp
+// Header for elapsed_time.cpp
 
 #ifndef ELAPSED_TIME_H_INCLUDED
 #define ELAPSED_TIME_H_INCLUDED

@@ -29,7 +29,13 @@ int main()
 	cout << "Then it updates the file with the current read time and total elapsed time." << endl;
 	cout << endl;
 	
-	// Creates a map of key-value pairs from a file of character names
+	// Data vectors
+	vector<string> names;
+	vector<long long int> times;
+	vector<int> levels;
+	vector<int> ticks;
+
+	// Populates names from file
 	string file1 = "names.txt";
 	ifstream names_file(file1);
 	if (!names_file)
@@ -37,8 +43,6 @@ int main()
 		cout << "Error reading " << file1 << endl;
 		return 0;
 	}
-
-	vector <string> vnames;
 	string line1;
 	while (true)
 	{
@@ -55,33 +59,24 @@ int main()
 				return 0;
 			}
 		}
-		vnames.push_back(line1);
+		names.push_back(line1);
 	}
-	names_file.close();
 
-	map<int, string> names;
-	for (unsigned int i = 0; i < vnames.size(); ++i)
-	{
-		names[i] = vnames[i];
-	}
-		
-	// Creates a map of key-value pairs from a file of character levels
-	string file2 = "levels.txt";
-	ifstream levels_file(file2);
-	if (!levels_file)
+	// Populates times from file
+	string file2 = "times.txt";
+	ifstream times_file(file2);
+	if (!times_file)
 	{
 		cout << "Error reading " << file2 << endl;
 		return 0;
 	}
-
-	vector <string> slevels;
 	string line2;
 	while (true)
 	{
-		getline(levels_file, line2);
-		if (!levels_file)
+		getline(times_file, line2);
+		if (!times_file)
 		{
-			if (levels_file.eof())
+			if (times_file.eof())
 			{
 				break;
 			}
@@ -91,26 +86,73 @@ int main()
 				return 0;
 			}
 		}
-		slevels.push_back(line2);
-	}
-	levels_file.close();
-
-	map<int, vector<long long int>> levels;
-	for (unsigned int i = 0; i < slevels.size(); ++i)
-	{
-		vector<long long int> ilevels;
-		istringstream iss(slevels[i]);
+		istringstream iss(line2);
 		long long int temp;
-		
-		while (iss >> temp)
-		{
-			ilevels.push_back(temp);
-		}
-		
-		levels[i] = ilevels;
+		iss >> temp;
+		times.push_back(temp);
 	}
 
-	// Prints map of characters
+	// Populates levels from file
+	string file3 = "levels.txt";
+	ifstream levels_file(file3);
+	if (!levels_file)
+	{
+		cout << "Error reading " << file3 << endl;
+		return 0;
+	}
+	string line3;
+	while (true)
+	{
+		getline(levels_file, line3);
+		if (!levels_file)
+		{
+			if (levels_file.eof())
+			{
+				break;
+			}
+			else
+			{
+				cout << "Error reading " << file3 << endl;
+				return 0;
+			}
+		}
+		istringstream iss(line3);
+		int temp;
+		iss >> temp;
+		levels.push_back(temp);
+	}
+
+	// Populates ticks from file
+	string file4 = "ticks.txt";
+	ifstream ticks_file(file4);
+	if (!ticks_file)
+	{
+		cout << "Error reading " << file4 << endl;
+		return 0;
+	}
+	string line4;
+	while (true)
+	{
+		getline(ticks_file, line4);
+		if (!ticks_file)
+		{
+			if (ticks_file.eof())
+			{
+				break;
+			}
+			else
+			{
+				cout << "Error reading " << file4 << endl;
+				return 0;
+			}
+		}
+		istringstream iss(line4);
+		int temp;
+		iss >> temp;
+		ticks.push_back(temp);
+	}
+
+	// Prints list of characters
 	for (unsigned int i = 0; i < names.size(); ++i)
 	{
 		cout << i << ". " << names[i] << endl;
@@ -131,11 +173,11 @@ int main()
 	ikey >> key;
 	
 	// Retrieves and calculates character data
-	vector<long long int> char_levels = levels[key];
-	int level = char_levels[0];
+	string name = names[key];
+	long long int last_update = times[key]; 
+	int level = levels[key];
 	int next_level = (level + 1) * (level + 1) * 3600;
-	long long int last_update = char_levels[1];
-	long long int total_ticks = char_levels[2];
+	int total_ticks = ticks[key];
 
 	// Calculates elapsed time
 	system_clock::time_point tp_now = system_clock::now();
@@ -145,7 +187,7 @@ int main()
 
 	// Output to user
 	cout << endl;
-	cout << "You selected: " << names[key] << endl;
+	cout << "You selected: " << name << endl;
 	cout << "Character level is " << level << endl;
 	cout << next_level << " seconds are needed for the next level." << endl;
 	cout << "The difference in times is " << elapsed << " seconds." << endl;

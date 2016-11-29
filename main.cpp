@@ -154,80 +154,85 @@ int main()
 	}
 	ticks_file.close();
 
-	// Prints list of characters
-	for (unsigned int i = 0; i < names.size(); ++i)
+	while (true)
 	{
-		cout << i << ". " << names[i] << endl;
+		// Prints list of characters
+		for (unsigned int i = 0; i < names.size(); ++i)
+		{
+			cout << i << ". " << names[i] << endl;
+		}
+		cout << endl;
+
+		// Character selection prompt
+		cout << "Select the character you wish to update." << endl;
+		string skey;
+		getline(cin, skey);
+		if (!cin)
+		{
+			cout << "Input error." << endl;
+			return 0;
+		}
+		int key;
+		istringstream ikey(skey);
+		ikey >> key;
+
+		// Retrieves and calculates character data
+		string name = names[key];
+		long long int last_update = times[key];
+		int level = levels[key];
+		int next_level = (level + 1) * (level + 1) * 3600;
+		int total_ticks = ticks[key];
+
+		// Calculates elapsed time
+		system_clock::time_point tp_now = system_clock::now();
+		time_t now = system_clock::to_time_t(tp_now);
+		int elapsed = now - last_update;
+		total_ticks = total_ticks + elapsed;
+
+		// Output to user
+		cout << endl;
+		cout << "You selected: " << name << endl;
+		cout << "Character level is " << level << endl;
+		cout << next_level << " seconds are needed for the next level." << endl;
+		cout << "The difference in times is " << elapsed << " seconds." << endl;
+		cout << "The total elapsed time is " << total_ticks << " seconds." << endl;
+		cout << endl;
+
+		// Increase level
+		while (total_ticks >= next_level)
+		{
+			total_ticks = total_ticks - next_level;
+			next_level = (level + 1) * (level + 1) * 3600;
+			++level;
+			cout << "Congratulations! " << name << " is now level " << level << "!" << endl;
+			cout << "Next level: " << total_ticks << "/" << next_level << endl;
+			cout << endl;
+		}
+
+		// Update files
+		times[key] = now;
+		levels[key] = level;
+		ticks[key] = total_ticks;
+
+		ofstream times_update(file2);
+		for (unsigned int i = 0; i < times.size(); ++i)
+		{
+			times_update << times[i] << endl;
+		}
+		times_update.close();
+
+		ofstream levels_update(file3);
+		for (unsigned int i = 0; i < levels.size(); ++i)
+		{
+			levels_update << levels[i] << endl;
+		}
+		levels_update.close();
+
+		ofstream ticks_update(file4);
+		for (unsigned int i = 0; i < ticks.size(); ++i)
+		{
+			ticks_update << ticks[i] << endl;
+		}
+		ticks_update.close();
 	}
-	cout << endl;
-
-	// Character selection prompt
-	cout << "Select the character you wish to update." << endl;
-	string skey;
-	getline(cin, skey);
-	if (!cin)
-	{
-		cout << "Input error." << endl;
-		return 0;
-	}
-	int key;
-	istringstream ikey(skey);
-	ikey >> key;
-	
-	// Retrieves and calculates character data
-	string name = names[key];
-	long long int last_update = times[key]; 
-	int level = levels[key];
-	int next_level = (level + 1) * (level + 1) * 3600;
-	int total_ticks = ticks[key];
-
-	// Calculates elapsed time
-	system_clock::time_point tp_now = system_clock::now();
-	time_t now = system_clock::to_time_t(tp_now);
-	int elapsed = now - last_update;
-	total_ticks = total_ticks + elapsed;
-
-	// Output to user
-	cout << endl;
-	cout << "You selected: " << name << endl;
-	cout << "Character level is " << level << endl;
-	cout << next_level << " seconds are needed for the next level." << endl;
-	cout << "The difference in times is " << elapsed << " seconds." << endl;
-	cout << "The total elapsed time is " << total_ticks << " seconds." << endl;
-
-	// Increase level
-	while (total_ticks >= next_level)
-	{
-		total_ticks = total_ticks - next_level;
-		next_level = (level + 1) * (level + 1) * 3600;
-		++level;
-		cout << "Congratulations! " << name << " is now level " << level << "!" << endl;
-		cout << "Next level: " << total_ticks << "/" << next_level << endl;
-	}
-
-	// Update files
-	times[key] = now;
-	levels[key] = level;
-	ticks[key] = total_ticks;
-
-	ofstream times_update(file2);
-	for (unsigned int i = 0; i < times.size(); ++i)
-	{
-		times_update << times[i] << endl;
-	}
-	times_update.close();
-
-	ofstream levels_update(file3);
-	for (unsigned int i = 0; i < levels.size(); ++i)
-	{
-		levels_update << levels[i] << endl;
-	}
-	levels_update.close();
-
-	ofstream ticks_update(file4);
-	for (unsigned int i = 0; i < ticks.size(); ++i)
-	{
-		ticks_update << ticks[i] << endl;
-	}
-	ticks_update.close();
 }

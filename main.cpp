@@ -19,8 +19,6 @@ using std::istringstream;
 using std::vector;
 # include <chrono>
 using std::chrono::system_clock;
-# include <map>
-using std::map;
 
 int main()
 {
@@ -61,6 +59,7 @@ int main()
 		}
 		names.push_back(line1);
 	}
+	names_file.close();
 
 	// Populates times from file
 	string file2 = "times.txt";
@@ -91,6 +90,7 @@ int main()
 		iss >> temp;
 		times.push_back(temp);
 	}
+	times_file.close();
 
 	// Populates levels from file
 	string file3 = "levels.txt";
@@ -121,6 +121,7 @@ int main()
 		iss >> temp;
 		levels.push_back(temp);
 	}
+	levels_file.close();
 
 	// Populates ticks from file
 	string file4 = "ticks.txt";
@@ -151,6 +152,7 @@ int main()
 		iss >> temp;
 		ticks.push_back(temp);
 	}
+	ticks_file.close();
 
 	// Prints list of characters
 	for (unsigned int i = 0; i < names.size(); ++i)
@@ -182,7 +184,7 @@ int main()
 	// Calculates elapsed time
 	system_clock::time_point tp_now = system_clock::now();
 	time_t now = system_clock::to_time_t(tp_now);
-	long long int elapsed = now - last_update;
+	int elapsed = now - last_update;
 	total_ticks = total_ticks + elapsed;
 
 	// Output to user
@@ -193,7 +195,39 @@ int main()
 	cout << "The difference in times is " << elapsed << " seconds." << endl;
 	cout << "The total elapsed time is " << total_ticks << " seconds." << endl;
 
-	// TODO: Update file with new values
-	// Update the char_levels vector then use that to update the levels map?
-	// Then write all of levels map to file2?
+	// Increase level
+	while (total_ticks >= next_level)
+	{
+		total_ticks = total_ticks - next_level;
+		next_level = (level + 1) * (level + 1) * 3600;
+		++level;
+		cout << "Congratulations! " << name << " is now level " << level << "!" << endl;
+		cout << "Next level: " << total_ticks << "/" << next_level << endl;
+	}
+
+	// Update files
+	times[key] = now;
+	levels[key] = level;
+	ticks[key] = total_ticks;
+
+	ofstream times_update(file2);
+	for (unsigned int i = 0; i < times.size(); ++i)
+	{
+		times_update << times[i] << endl;
+	}
+	times_update.close();
+
+	ofstream levels_update(file3);
+	for (unsigned int i = 0; i < levels.size(); ++i)
+	{
+		levels_update << levels[i] << endl;
+	}
+	levels_update.close();
+
+	ofstream ticks_update(file4);
+	for (unsigned int i = 0; i < ticks.size(); ++i)
+	{
+		ticks_update << ticks[i] << endl;
+	}
+	ticks_update.close();
 }

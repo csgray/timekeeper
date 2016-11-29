@@ -156,15 +156,21 @@ int main()
 
 	while (true)
 	{
+		// Current time
+		system_clock::time_point tp_now = system_clock::now();
+		time_t now = system_clock::to_time_t(tp_now);
+		
 		// Prints list of characters
 		for (unsigned int i = 0; i < names.size(); ++i)
 		{
 			cout << i << ". " << names[i] << endl;
 		}
+		cout << names.size() << ". " << "Create a new character." << endl;
 		cout << endl;
 
 		// Character selection prompt
-		cout << "Select the character you wish to update." << endl;
+		cout << "Select the character you wish to update or create a new character." << endl;
+		cout << "Or enter a blank line to quit." << endl;
 		string skey;
 		getline(cin, skey);
 		if (!cin)
@@ -172,9 +178,51 @@ int main()
 			cout << "Input error." << endl;
 			return 0;
 		}
+		if (skey.empty())
+		{
+			cout << "Goodbye." << endl;
+			return 0;
+		}
 		int key;
 		istringstream ikey(skey);
 		ikey >> key;
+		if (key > names.size())
+		{
+			cout << "Invalid selection: No such character." << endl;
+			continue;
+		}
+
+		// New character creation
+		if (key == names.size())
+		{
+			cout << endl;
+			cout << "What is this new character called? Blank line to cancel." << endl;
+			string new_name;
+			getline(cin, new_name);
+			if (!cin)
+			{
+				cout << "Input error." << endl;
+				return 0;
+			}
+			if (new_name.empty())
+			{
+				continue;
+			}
+
+			// Update vectors
+			names.push_back(new_name);
+			times.push_back(now);
+			levels.push_back(0);
+			ticks.push_back(0);
+
+			// Update names (other files updated at end)
+			ofstream names_update(file1);
+			for (unsigned int i = 0; i < names.size(); ++i)
+			{
+				names_update << names[i] << endl;
+			}
+			names_update.close();
+		}
 
 		// Retrieves and calculates character data
 		string name = names[key];
@@ -182,10 +230,6 @@ int main()
 		int level = levels[key];
 		int next_level = (level + 1) * (level + 1) * 3600;
 		int total_ticks = ticks[key];
-
-		// Calculates elapsed time
-		system_clock::time_point tp_now = system_clock::now();
-		time_t now = system_clock::to_time_t(tp_now);
 		int elapsed = now - last_update;
 		total_ticks = total_ticks + elapsed;
 

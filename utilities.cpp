@@ -1,7 +1,7 @@
 // utilities.cpp
 // Mike Bilan & Corey Gray
 // 29 Nov 2016
-// Source file contains reusable functions for
+// Source file contains reusable functions for timetracker.cpp
 
 #include "utilities.h"
 #include <iostream>
@@ -98,7 +98,7 @@ bool popNums(string file, vector<long long int> &data)
 
 
 // Take user input for menu prompts, checking for errors in user entry
-bool userIn(int &key, vector<string> names)
+bool userIn(unsigned int &key, vector<string> names)
 {
     while(true)
     {
@@ -152,7 +152,7 @@ void saveName(string file, vector<string> data)
     ofstream ofile(file);
 
     // Write all entries in data set to file
-    for (time_t i = 0;
+    for (size_t i = 0;
      i < data.size(); ++i)
     {
         ofile << data[i] << endl;
@@ -163,18 +163,18 @@ void saveName(string file, vector<string> data)
 }
 
 
-//save function for all vector objects that store integer values
+// Save function for all vector objects that store integer values
 void saveFile(string file, vector<long long int> data)
 {
-    //open file output destination
+    // Open file output destination
     ofstream ofile(file);
 
-    //write all entries in data set to file
+    // Write all entries in data set to file
     for (size_t i = 0; i < data.size(); ++i)
     {
         ofile << data[i] << endl;
     }
 
-    //close file
+    // Close file
     ofile.close();
 }

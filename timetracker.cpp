@@ -1,7 +1,8 @@
-// main.cpp
+// timetracker.cpp
 // Mike Bilan and Corey Gray
 // 27 Nov 2016
-// Reads time from file, calculates elapsed time, and writes output to file
+// Maintains a psuedo-database of characters where each 'table' is a separate file
+// and tracks the elapsed seconds towards each character's next level
 
 #include <iostream>
 using std::cout;
@@ -14,20 +15,19 @@ using std::getline;
 using std::vector;
 #include <chrono>
 using std::chrono::system_clock;
-#include "Utilities.h"
+#include "utilities.h"
 
 int main()
 {
 	cout << "Welcome to Time Tracker." << endl;
-	cout << "This program reads the last time the file was updated and the total elapsed time since the first read." << endl;
-	cout << "Then it updates the file with the current read time and total elapsed time." << endl;
+	cout << "This program maintains a psuedo-database of characters and tracks the elapsed seconds towards their next level." << endl;
 	cout << endl;
 
     // Source file names, cannot be modified
     const string fileNames = "names.txt";
     const string fileTimes = "times.txt";
     const string fileLevels = "levels.txt";
-    const string fileTicks = "ticks.txt";
+    const string fileTicks = "ticks.txt"; // 'ticks' are seconds
 
 	// Data vectors
 	vector<string> names;
@@ -73,8 +73,8 @@ int main()
 		cout << names.size() << ". " << "Create a new character." << endl;
 		cout << endl;
 
-		//take character selection from user
-        int selection;
+		// Take character selection from user
+        unsigned int selection;
         if(!userIn(selection, names))
         {
             return 0;
@@ -115,19 +115,18 @@ int main()
 		// Retrieves and calculates character data
 		string name = names[selection];
 		long long int last_update = times[selection];
-		int level = levels[selection];
-		int next_level = (level + 1) * (level + 1) * 3600;
-		int total_ticks = ticks[selection];
-		int elapsed = now - last_update;
+		long long int level = levels[selection];
+		long long int next_level = (level + 1) * (level + 1) * 3600;
+		long long int total_ticks = ticks[selection];
+		long long int elapsed = now - last_update;
 		total_ticks = total_ticks + elapsed;
 
 		// Output to user
 		cout << endl;
 		cout << "You selected: " << name << endl;
-		cout << "Character level is " << level << endl;
-		cout << next_level << " seconds are needed for the next level." << endl;
-		cout << "You last accessed this character " << elapsed << " seconds." << endl;
-		cout << "The total elapsed time is " << total_ticks << " seconds." << endl;
+		cout << "You last accessed this character " << elapsed << " seconds ago." << endl;
+		cout << "They are level " << level << "." << endl;
+		cout << "They now have " << total_ticks << "/" << next_level << " seconds towards their next level." << endl;
 		cout << endl;
 
 		// Increase level
@@ -141,7 +140,7 @@ int main()
 			cout << endl;
 		}
 
-		// Update non-name files
+		// Update non-name objects and save to respective source files
 		times[selection] = now;
 		levels[selection] = level;
 		ticks[selection] = total_ticks;

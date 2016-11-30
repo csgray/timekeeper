@@ -1,3 +1,8 @@
+// utilities.h
+// Mike Bilan & Corey Gray
+// 29 Nov 2016
+// Header for utilities file
+
 #ifndef UTILITIES_H_INCLUDED
 #define UTILITIES_H_INCLUDED
 
@@ -10,7 +15,7 @@ bool popNames(string file, vector<string> &names);
 
 bool popNums(string file, vector<long long int> &data);
 
-bool userIn(int &key, vector<string> names);
+bool userIn(unsigned int &key, vector<string> names);
 
 void saveName(string file, vector<string> data);
 

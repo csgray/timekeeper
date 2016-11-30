@@ -7,18 +7,14 @@
 using std::cout;
 using std::cin;
 using std::endl;
-#include <fstream>
-using std::ifstream;
-using std::ofstream;
 #include <string>
 using std::string;
 using std::getline;
-#include <sstream>
-using std::istringstream;
 #include <vector>
 using std::vector;
-# include <chrono>
+#include <chrono>
 using std::chrono::system_clock;
+#include "Utilities.h"
 
 int main()
 {
@@ -26,174 +22,70 @@ int main()
 	cout << "This program reads the last time the file was updated and the total elapsed time since the first read." << endl;
 	cout << "Then it updates the file with the current read time and total elapsed time." << endl;
 	cout << endl;
-	
+
+    // Source file names, cannot be modified
+    const string fileNames = "names.txt";
+    const string fileTimes = "times.txt";
+    const string fileLevels = "levels.txt";
+    const string fileTicks = "ticks.txt";
+
 	// Data vectors
 	vector<string> names;
 	vector<long long int> times;
-	vector<int> levels;
-	vector<int> ticks;
+	vector<long long int> levels;
+	vector<long long int> ticks;
 
-	// Populates names from file
-	string file1 = "names.txt";
-	ifstream names_file(file1);
-	if (!names_file)
-	{
-		cout << "Error reading " << file1 << endl;
-		return 0;
-	}
-	string line1;
-	while (true)
-	{
-		getline(names_file, line1);
-		if (!names_file)
-		{
-			if (names_file.eof())
-			{
-				break;
-			}
-			else
-			{
-				cout << "Error reading " << file1 << endl;
-				return 0;
-			}
-		}
-		names.push_back(line1);
-	}
-	names_file.close();
+	// Populates names from file, quits if file was unavailable
+	if(!popNames(fileNames, names))
+    {
+        return 0;
+    }
 
-	// Populates times from file
-	string file2 = "times.txt";
-	ifstream times_file(file2);
-	if (!times_file)
-	{
-		cout << "Error reading " << file2 << endl;
-		return 0;
-	}
-	string line2;
-	while (true)
-	{
-		getline(times_file, line2);
-		if (!times_file)
-		{
-			if (times_file.eof())
-			{
-				break;
-			}
-			else
-			{
-				cout << "Error reading " << file2 << endl;
-				return 0;
-			}
-		}
-		istringstream iss(line2);
-		long long int temp;
-		iss >> temp;
-		times.push_back(temp);
-	}
-	times_file.close();
+	// Populates times from file, quits if file was unavailable
+	if(!popNums(fileTimes, times))
+    {
+        return 0;
+    }
 
-	// Populates levels from file
-	string file3 = "levels.txt";
-	ifstream levels_file(file3);
-	if (!levels_file)
-	{
-		cout << "Error reading " << file3 << endl;
-		return 0;
-	}
-	string line3;
-	while (true)
-	{
-		getline(levels_file, line3);
-		if (!levels_file)
-		{
-			if (levels_file.eof())
-			{
-				break;
-			}
-			else
-			{
-				cout << "Error reading " << file3 << endl;
-				return 0;
-			}
-		}
-		istringstream iss(line3);
-		int temp;
-		iss >> temp;
-		levels.push_back(temp);
-	}
-	levels_file.close();
+	// Populates levels from file, quits if file was unavailable
+	if(!popNums(fileLevels, levels))
+    {
+        return 0;
+    }
 
-	// Populates ticks from file
-	string file4 = "ticks.txt";
-	ifstream ticks_file(file4);
-	if (!ticks_file)
-	{
-		cout << "Error reading " << file4 << endl;
-		return 0;
-	}
-	string line4;
-	while (true)
-	{
-		getline(ticks_file, line4);
-		if (!ticks_file)
-		{
-			if (ticks_file.eof())
-			{
-				break;
-			}
-			else
-			{
-				cout << "Error reading " << file4 << endl;
-				return 0;
-			}
-		}
-		istringstream iss(line4);
-		int temp;
-		iss >> temp;
-		ticks.push_back(temp);
-	}
-	ticks_file.close();
+	// Populates ticks from file, quits if file was unavailable
+    if(!popNums(fileTicks, ticks))
+    {
+        return 0;
+    }
 
 	while (true)
 	{
-		// Current time
-		system_clock::time_point tp_now = system_clock::now();
-		time_t now = system_clock::to_time_t(tp_now);
-		
+		// Character selection prompt
+		cout << "Select the character you wish to update or create a new character." << endl;
+		cout << "Or enter a blank line to quit." << endl;
+
 		// Prints list of characters
-		for (unsigned int i = 0; i < names.size(); ++i)
+		for (size_t i = 0; i < names.size(); ++i)
 		{
 			cout << i << ". " << names[i] << endl;
 		}
 		cout << names.size() << ". " << "Create a new character." << endl;
 		cout << endl;
 
-		// Character selection prompt
-		cout << "Select the character you wish to update or create a new character." << endl;
-		cout << "Or enter a blank line to quit." << endl;
-		string skey;
-		getline(cin, skey);
-		if (!cin)
-		{
-			cout << "Input error." << endl;
-			return 0;
-		}
-		if (skey.empty())
-		{
-			cout << "Goodbye." << endl;
-			return 0;
-		}
-		int key;
-		istringstream ikey(skey);
-		ikey >> key;
-		if (key > names.size())
-		{
-			cout << "Invalid selection: No such character." << endl;
-			continue;
-		}
+		//take character selection from user
+        int selection;
+        if(!userIn(selection, names))
+        {
+            return 0;
+        }
+
+		// Current time
+		system_clock::time_point tp_now = system_clock::now();
+		time_t now = system_clock::to_time_t(tp_now);
 
 		// New character creation
-		if (key == names.size())
+		if (selection == names.size())
 		{
 			cout << endl;
 			cout << "What is this new character called? Blank line to cancel." << endl;
@@ -209,27 +101,23 @@ int main()
 				continue;
 			}
 
-			// Update vectors
+			// Update vectors for new character entry
 			names.push_back(new_name);
 			times.push_back(now);
 			levels.push_back(0);
 			ticks.push_back(0);
 
-			// Update names (other files updated at end)
-			ofstream names_update(file1);
-			for (unsigned int i = 0; i < names.size(); ++i)
-			{
-				names_update << names[i] << endl;
-			}
-			names_update.close();
+			// Update name file
+			saveName(fileNames,names);
 		}
 
+
 		// Retrieves and calculates character data
-		string name = names[key];
-		long long int last_update = times[key];
-		int level = levels[key];
+		string name = names[selection];
+		long long int last_update = times[selection];
+		int level = levels[selection];
 		int next_level = (level + 1) * (level + 1) * 3600;
-		int total_ticks = ticks[key];
+		int total_ticks = ticks[selection];
 		int elapsed = now - last_update;
 		total_ticks = total_ticks + elapsed;
 
@@ -238,7 +126,7 @@ int main()
 		cout << "You selected: " << name << endl;
 		cout << "Character level is " << level << endl;
 		cout << next_level << " seconds are needed for the next level." << endl;
-		cout << "The difference in times is " << elapsed << " seconds." << endl;
+		cout << "You last accessed this character " << elapsed << " seconds." << endl;
 		cout << "The total elapsed time is " << total_ticks << " seconds." << endl;
 		cout << endl;
 
@@ -253,30 +141,13 @@ int main()
 			cout << endl;
 		}
 
-		// Update files
-		times[key] = now;
-		levels[key] = level;
-		ticks[key] = total_ticks;
+		// Update non-name files
+		times[selection] = now;
+		levels[selection] = level;
+		ticks[selection] = total_ticks;
 
-		ofstream times_update(file2);
-		for (unsigned int i = 0; i < times.size(); ++i)
-		{
-			times_update << times[i] << endl;
-		}
-		times_update.close();
-
-		ofstream levels_update(file3);
-		for (unsigned int i = 0; i < levels.size(); ++i)
-		{
-			levels_update << levels[i] << endl;
-		}
-		levels_update.close();
-
-		ofstream ticks_update(file4);
-		for (unsigned int i = 0; i < ticks.size(); ++i)
-		{
-			ticks_update << ticks[i] << endl;
-		}
-		ticks_update.close();
+		saveFile(fileTimes, times);
+		saveFile(fileLevels, levels);
+		saveFile(fileTicks, ticks);
 	}
 }

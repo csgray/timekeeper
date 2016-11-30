@@ -14,7 +14,7 @@ using std::getline;
 using std::vector;
 #include <chrono>
 using std::chrono::system_clock;
-#include "Utilities.h"
+#include "utilities.h"
 
 int main()
 {
@@ -73,7 +73,7 @@ int main()
 		cout << names.size() << ". " << "Create a new character." << endl;
 		cout << endl;
 
-		//take character selection from user
+		// Take character selection from user
         int selection;
         if(!userIn(selection, names))
         {
@@ -141,7 +141,7 @@ int main()
 			cout << endl;
 		}
 
-		// Update non-name files
+		// Update non-name objects and save to respective source files
 		times[selection] = now;
 		levels[selection] = level;
 		ticks[selection] = total_ticks;

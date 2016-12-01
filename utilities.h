@@ -11,6 +11,10 @@ using std::string;
 #include <vector>
 using std::vector;
 
+bool checkFiles(string file1, string file2, string file3, string file4);
+
+bool makeFiles(string file1, string file2, string file3, string file4);
+
 bool popNames(string file, vector<string> &names);
 
 bool popNums(string file, vector<long long int> &data);

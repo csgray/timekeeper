@@ -18,7 +18,7 @@ using std::istringstream;
 using std::ifstream;
 using std::ofstream;
 
-// Function checks attempts to open/close all text database files
+// Function attempts to open/close all text database files
 bool checkFiles(string file1, string file2, string file3, string file4)
 {
     // Create new file

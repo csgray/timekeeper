@@ -1,7 +1,7 @@
 // utilities.h
 // Mike Bilan & Corey Gray
 // 29 Nov 2016
-// Header for utilities file
+// Header for utilities.cpp
 
 #ifndef UTILITIES_H_INCLUDED
 #define UTILITIES_H_INCLUDED

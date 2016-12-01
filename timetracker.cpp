@@ -125,11 +125,13 @@ int main()
 			levels.push_back(0);
 			ticks.push_back(0);
 
-			// Update name file
+			// Write files
 			saveName(fileNames,names);
             saveFile(fileTimes, times);
             saveFile(fileLevels, levels);
             saveFile(fileTicks, ticks);
+			cout << endl;
+			continue;
 		}
 		// Character removal
 		else if (selection == names.size()+1)
@@ -164,8 +166,11 @@ int main()
             ticks.erase(ticks.begin()+choice);
             cout << "Done!" << endl;
 
-            // Update name file
-			saveName(fileNames,names);
+            // Write files
+			saveName(fileNames, names);
+			saveFile(fileTimes, times);
+			saveFile(fileLevels, levels);
+			saveFile(fileTicks, ticks);
 			cout << endl;
 			continue;
         }

@@ -18,6 +18,66 @@ using std::istringstream;
 using std::ifstream;
 using std::ofstream;
 
+// Function attempts to open/close all text database files
+bool checkFiles(string file1, string file2, string file3, string file4)
+{
+    // Create new file
+    ifstream filecheck1(file1);
+    if(!filecheck1)
+        return false;
+    filecheck1.close();
+
+    // Create new file
+    ifstream filecheck2(file2);
+    if(!filecheck2)
+        return false;
+    filecheck2.close();
+
+   // Create new file
+    ifstream filecheck3(file3);
+    if(!filecheck3)
+        return false;
+    filecheck3.close();
+
+    // Create new file
+    ifstream filecheck4(file4);
+    if(!filecheck4)
+        return false;
+    filecheck4.close();
+
+    return true;
+}
+
+// Creates all required database files, truncating all data in case a file did exist
+bool makeFiles(string file1, string file2, string file3, string file4)
+{
+    //
+    ofstream newfile1(file1);
+    if(!newfile1)
+        return false;
+    newfile1.close();
+
+    //
+    ofstream newfile2(file2);
+    if(!newfile2)
+        return false;
+    newfile2.close();
+
+        //
+    ofstream newfile3(file3);
+    if(!newfile3)
+        return false;
+    newfile3.close();
+
+        //
+    ofstream newfile4(file4);
+    if(!newfile4)
+        return false;
+    newfile4.close();
+
+    return true;
+}
+
 // Function reads lines from specified files to populate vector list of character names
 bool popNames(string file, vector<string> &names)
 {
@@ -135,7 +195,7 @@ bool userIn(unsigned int &key, vector<string> names)
 		ikey >> key;
 
 		// Confirm valid user selection
-        if (key > names.size())
+        if (key > names.size()+1)
         {
             cout << "Invalid selection - please try again." << endl;
             continue;

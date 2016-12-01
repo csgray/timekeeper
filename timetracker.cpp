@@ -15,6 +15,8 @@ using std::getline;
 using std::vector;
 #include <chrono>
 using std::chrono::system_clock;
+#include <sstream>
+using std::istringstream;
 #include "utilities.h"
 
 int main()
@@ -34,6 +36,20 @@ int main()
 	vector<long long int> times;
 	vector<long long int> levels;
 	vector<long long int> ticks;
+
+	// Checks if all required text database files are available
+	// If a file is unavailable, creates new file database
+	if(!checkFiles(fileNames,fileTimes,fileLevels,fileTicks))
+    {
+        cout << "One or more required database files were unavailable." << endl;
+        cout << "Creating new database files...";
+        if(!makeFiles(fileNames,fileTimes,fileLevels,fileTicks))
+        {
+            cout << "Error in file creation. Goodbye." << endl;
+            return 0;
+        }
+        cout << " Done!" << endl << endl;
+    }
 
 	// Populates names from file, quits if file was unavailable
 	if(!popNames(fileNames, names))
@@ -70,7 +86,8 @@ int main()
 		{
 			cout << i << ". " << names[i] << endl;
 		}
-		cout << names.size() << ". " << "Create a new character." << endl;
+		cout << names.size() << ". Create a new character." << endl;
+		cout << names.size()+1 << ". Delete a character." << endl;
 		cout << endl;
 
 		// Take character selection from user
@@ -89,6 +106,7 @@ int main()
 		{
 			cout << endl;
 			cout << "What is this new character called? Blank line to cancel." << endl;
+			cout << endl;
 			string new_name;
 			getline(cin, new_name);
 			if (!cin)
@@ -107,9 +125,55 @@ int main()
 			levels.push_back(0);
 			ticks.push_back(0);
 
-			// Update name file
+			// Write files
 			saveName(fileNames,names);
+            saveFile(fileTimes, times);
+            saveFile(fileLevels, levels);
+            saveFile(fileTicks, ticks);
+			cout << endl;
+			continue;
 		}
+		// Character removal
+		else if (selection == names.size()+1)
+        {
+            cout << endl;
+            cout << "Which character do you want to remove? (Enter to cancel)" << endl;
+    		for (size_t i = 0; i < names.size(); ++i)
+            {
+                cout << i << ". " << names[i] << endl;
+            }
+            cout << endl;
+            string remchar;
+            getline(cin, remchar);
+            if(!cin)
+            {
+                cout << "Input error." << endl;
+                return 0;
+            }
+            else if (remchar.empty())
+            {
+                continue;
+            }
+            istringstream rmc(remchar);
+            int choice;
+            rmc >> choice;
+
+            // Erase data for user selection
+            cout << "Deleting " << names[choice] << " and all associated data... ";
+            names.erase(names.begin()+choice);
+            times.erase(times.begin()+choice);
+            levels.erase(levels.begin()+choice);
+            ticks.erase(ticks.begin()+choice);
+            cout << "Done!" << endl;
+
+            // Write files
+			saveName(fileNames, names);
+			saveFile(fileTimes, times);
+			saveFile(fileLevels, levels);
+			saveFile(fileTicks, ticks);
+			cout << endl;
+			continue;
+        }
 
 
 		// Retrieves and calculates character data

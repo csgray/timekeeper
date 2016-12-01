@@ -127,6 +127,9 @@ int main()
 
 			// Update name file
 			saveName(fileNames,names);
+            saveFile(fileTimes, times);
+            saveFile(fileLevels, levels);
+            saveFile(fileTicks, ticks);
 		}
 		// Character removal
 		else if (selection == names.size()+1)
